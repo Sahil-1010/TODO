@@ -12,24 +12,13 @@ app.use(methodOverride('_method'));
 
 app.set("view engine","ejs");
 app.set("views", path.join(__dirname, "views"));
-require('dotenv').config();
-
 
 const connection = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
+    host: 'localhost',
+    user: 'root',
+    database: "todo",
+    password:"SAHIL@!@#$",
 });
-
-connection.connect((err) => {
-    if (err) {
-        console.error("Database connection failed: " + err.stack);
-        return;
-    }
-    console.log("Connected to the database!");
-});
-
 
 app.use(express.static(path.join(__dirname,"public")));
 
