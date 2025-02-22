@@ -14,14 +14,13 @@ app.set("view engine","ejs");
 app.set("views", path.join(__dirname, "views"));
 require('dotenv').config();
 
+
 const connection = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    ssl: { rejectUnauthorized: true } // Add this
+    password: process.env.DB_PASSWORD,
 });
-
 
 connection.connect((err) => {
     if (err) {
