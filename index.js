@@ -13,7 +13,6 @@ app.use(methodOverride('_method'));
 app.set("view engine","ejs");
 app.set("views", path.join(__dirname, "views"));
 require('dotenv').config();
-const mysql = require('mysql2');
 
 const connection = mysql.createConnection({
     host: process.env.DB_HOST,
