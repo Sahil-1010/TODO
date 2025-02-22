@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TO-DO</title>
+    <link rel="stylesheet" href="/style.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playwrite+IT+Moderna:wght@100..400&display=swap" rel="stylesheet">
+    
+</head>
+<body>
+
+    <h2>TO-DO LIST</h2>
+    <br>
+    <a href="/tasks/new">
+        <button class="add-btn">Add Task</button>
+    </a>
+    <div class="task-container">
+        <% for (let task of tasks) { %>
+            <div class="task">
+                <p class="id">ID: <%= task.id %></p>
+                <h3 class="task_name <%= task.check ? 'done' : '' %>"><%= task.task %></h3>
+                <h5 class="details <%= task.check ? 'done' : '' %>"><%= task.details %></h5>
+
+                <!-- Edit Button -->
+                <a href="/tasks/<%= task.id %>/edit">
+                    <button class="edit_btn">Edit Details</button>
+                </a>
+
+                <!-- Delete Form -->
+                <form method="post" action="/tasks/<%= task.id %>?_method=DELETE">
+                    <button class="delete-btn">Delete</button>
+                </form>
+
+                <!-- Checkbox to Mark Task as Done -->
+                <form method="post" class="checker" action="/tasks/<%= task.id %>/done?_method=PATCH">
+                    <label>Mark As Done</label>
+                    <input type="checkbox" id="do" name="done" onchange="this.form.submit()" <%= task.check ? 'checked' : '' %> >
+                </form>
+            </div>
+        <% } %>
+    </div>
+
+   
+
+</body>
+</html>
