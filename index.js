@@ -17,9 +17,11 @@ require('dotenv').config();
 const connection = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
-    database: process.env.DB_NAME,
     password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    ssl: { rejectUnauthorized: true } // Add this
 });
+
 
 connection.connect((err) => {
     if (err) {
