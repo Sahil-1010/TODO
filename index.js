@@ -23,6 +23,21 @@ const connection = mysql.createConnection({
 app.use(express.static(path.join(__dirname,"public")));
 
 
+app.get("/",(req,res)=>{
+    let q='select * from tasks';
+    // res.send("success");
+    try{
+      connection.query(q,(err,tasks)=>{
+          if (err) throw err;
+          // console.log(result);
+          res.render("index.ejs",{tasks});
+      });
+      }catch(err){
+          console.log(err);
+          res.send("some error in db");
+      }
+  });
+
 //show route
 app.get("/tasks",(req,res)=>{
     let q='select * from tasks';
