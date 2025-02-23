@@ -1,57 +1,54 @@
-const express = require("express");
-const app = express();
-const mysql = require("mysql2");
-const port = 8000;
-const path = require("path");
-const methodOverride = require("method-override");
+const express=require("express");
+const app=express();
+const mysql = require('mysql2');
+const port = 5000;
+const path=require("path");
+const { v4: uuidv4}=require('uuid');
+const methodOverride=require('method-override');
+const { log } = require("console");
 
-app.use(express.urlencoded({ extended: true }));
-app.use(methodOverride("_method"));
+app.use(express.urlencoded({extended:true}));
+app.use(methodOverride('_method'));
 
-app.set("view engine", "ejs");
+app.set("view engine","ejs");
 app.set("views", path.join(__dirname, "views"));
 
 const connection = mysql.createConnection({
-    host: "sql313.infinityfree.com",
-    user: "if0_38374426",
-    password: "9U346nKz5mkX",
-    database: "if0_38374426_todo",
-    port: 3306,
+    host: 'localhost',
+    user: 'root',
+    database: "todo",
+    password:"SAHIL@!@#$",
 });
 
-connection.connect(err => {
-    if (err) {
-        console.error("Database connection failed: ", err);
-        return;
-    }
-    console.log("Connected to MySQL database!");
-});
+app.use(express.static(path.join(__dirname,"public")));
 
-app.use(express.static(path.join(__dirname, "public")));
 
-// Show all tasks
-app.get("/tasks", (req, res) => {
-    let q = "SELECT * FROM tasks";
-    try {
-        connection.query(q, (err, tasks) => {
-            if (err) throw err;
-            res.render("index.ejs", { tasks });
-        });
-    } catch (err) {
-        console.log(err);
-        res.send("Some error in DB");
-    }
-});
+//show route
+app.get("/tasks",(req,res)=>{
+    let q='select * from tasks';
+    // res.send("success");
+    try{
+      connection.query(q,(err,tasks)=>{
+          if (err) throw err;
+          // console.log(result);
+          res.render("index.ejs",{tasks});
+      });
+      }catch(err){
+          console.log(err);
+          res.send("some error in db");
+      }
+  });
 
-// Render form for new task
-app.get("/tasks/new", (req, res) => {
+
+app.get("/tasks/new",(req,res)=>{
     res.render("new.ejs");
 });
 
-// Add new task
+
+
 app.post("/tasks", (req, res) => {
     let { name, details } = req.body;
-    let q = "INSERT INTO tasks (task, details) VALUES (?, ?)";
+    let q = `INSERT INTO tasks (task, details) VALUES (?, ?)`;
 
     connection.query(q, [name, details], (err, result) => {
         if (err) {
@@ -62,11 +59,11 @@ app.post("/tasks", (req, res) => {
     });
 });
 
-// Update task details
+
 app.patch("/tasks/:id", (req, res) => {
     let { id } = req.params;
     let { details } = req.body;
-    let q = "UPDATE tasks SET details = ? WHERE id = ?";
+    let q = `UPDATE tasks SET details = ? WHERE id = ?`;
 
     connection.query(q, [details, id], (err, result) => {
         if (err) {
@@ -77,10 +74,10 @@ app.patch("/tasks/:id", (req, res) => {
     });
 });
 
-// Render edit task page
+
 app.get("/tasks/:id/edit", (req, res) => {
     let { id } = req.params;
-    let q = "SELECT * FROM tasks WHERE id = ?";
+    let q = `SELECT * FROM tasks WHERE id = ?`;
 
     connection.query(q, [id], (err, results) => {
         if (err) {
@@ -90,14 +87,14 @@ app.get("/tasks/:id/edit", (req, res) => {
         if (results.length === 0) {
             return res.send("Task not found");
         }
-        res.render("edit.ejs", { task: results[0] });
+        res.render("edit.ejs", { task: results[0] }); // Send the fetched task to the edit page
     });
 });
 
-// Toggle task completion
+
 app.patch("/tasks/:id/done", (req, res) => {
     let { id } = req.params;
-    let q = "UPDATE tasks SET `check` = NOT `check` WHERE id = ?";
+    let q = `UPDATE tasks SET \`check\` = NOT \`check\` WHERE id = ?`;
 
     connection.query(q, [id], (err, result) => {
         if (err) {
@@ -108,10 +105,9 @@ app.patch("/tasks/:id/done", (req, res) => {
     });
 });
 
-// Delete a task
 app.delete("/tasks/:id", (req, res) => {
     let { id } = req.params;
-    let q = "DELETE FROM tasks WHERE id = ?";
+    let q = `DELETE FROM tasks WHERE id = ?`;
 
     connection.query(q, [id], (err, result) => {
         if (err) {
@@ -122,6 +118,7 @@ app.delete("/tasks/:id", (req, res) => {
     });
 });
 
+
 app.listen(port, () => {
-    console.log(`Listening on port ${port}`);
+    console.log(`listening on port ${port}`);
 });
